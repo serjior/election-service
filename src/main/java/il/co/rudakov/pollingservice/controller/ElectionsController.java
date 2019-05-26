@@ -5,7 +5,6 @@ import il.co.rudakov.pollingservice.controller.dto.ResponseMessage;
 import il.co.rudakov.pollingservice.error_hadler.Exception409;
 import il.co.rudakov.pollingservice.provider.ControllerInteractorInterface;
 import il.co.rudakov.pollingservice.service.ElectionsServiceInterface;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

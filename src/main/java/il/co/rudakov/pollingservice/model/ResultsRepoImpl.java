@@ -28,13 +28,7 @@ public class ResultsRepoImpl implements ResultsRepoInterface{
     int totalVotes;
     double initRate;
     double currentRate;
-/*    double max=0;
-    String leader = "";*/
 
-
-/*    public Map<String, Integer> getResults() {
-        return null;
-    }*/
 
     public ResultsRepoImpl() {
         agreements = new HashMap<>();
