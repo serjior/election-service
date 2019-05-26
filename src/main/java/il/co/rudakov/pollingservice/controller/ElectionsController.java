@@ -21,8 +21,6 @@ public class ElectionsController {
     @Autowired
     ElectionsServiceInterface service;
     @Autowired
-    ObjectFactory<VoteThread>  threadFactory;
-    @Autowired
     ControllerInteractorInterface modelInteractor;
 
     @PostMapping("/vote")
