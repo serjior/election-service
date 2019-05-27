@@ -100,7 +100,7 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
             // Starting competition for the next surplus mandate - beneficiary look up algorithm
             String[] result = surplusMandateCompetition(repo.getReminders(),
                     repo.getThresholdSeedResults(),
-                    leftovers,
+                    //leftovers,
                     repo.getCurrentRate());
             // adding surplus mandate to the winner
             repo.getSurplusMandates().put(result[0], repo.getSurplusMandates().get(result[0]) +1);
@@ -145,7 +145,7 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                 .forEach(entry -> {
                     if(!entry.getKey().contains(";"))
                         repo.getFinalResults().put(entry.getKey(), entry.getValue());
-                    else{
+                    else if(entry.getValue() != 0){
                         String[] parties = entry.getKey().split(";");
                         String party1 = parties[0];
                         String party2 = parties[1];
@@ -167,8 +167,24 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                         repo.getSurplusMandates().put(party2, 0);
 
                         while(surplus > 0){
+                            System.out.println("reminders:");
+                            System.out.println(party1);
+                            System.out.println(unionReminders.get(party1));
+                            System.out.println(party2);
+                            System.out.println(unionReminders.get(party2));
+                            System.out.println("surplus");
+                            System.out.println(surplus);
+                            if(unionReminders.get(party1) <= 0){
+                                repo.getSurplusMandates().put(party2, surplus);
+                                break;
+                            }
+                            if(unionReminders.get(party2) <=0 ){
+                                repo.getSurplusMandates().put(party1, surplus);
+                                break;
+                            }
+
                             // Starting competition for the next surplus mandate - beneficiary look up algorithm
-                            String result[] = surplusMandateCompetition(unionReminders, repo.getThresholdSeedResults(), surplus, repo.getCurrentRate());
+                            String result[] = surplusMandateCompetition(unionReminders,repo.getSnapshot() /*repo.getThresholdSeedResults()*/, repo.getCurrentRate());
                             // adding surplus mandate to the winner
                             repo.getSurplusMandates().put(result[0], repo.getSurplusMandates().get(result[0]) +1);
                             // reducing winner's reminder
@@ -269,7 +285,7 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
 
     private String[] surplusMandateCompetition(Map<String, Double> reminders,
                                              Map<String, Integer> thresholdSeedResults,
-                                             int leftovers,
+                                             //int leftovers,
                                              double currentRate){
 
         // new mandate Rate calculation (reevaluated cost of a mandate)
