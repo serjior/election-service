@@ -10,4 +10,5 @@ public interface ModelInterface {
 
     boolean addAgreement(String partyName1, String partyName2);
     Map<String, String> getAgreements();
+    boolean setAgreements(Map<String, String> agreements);
 }

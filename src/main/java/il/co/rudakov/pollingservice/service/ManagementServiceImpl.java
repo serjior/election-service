@@ -5,6 +5,7 @@ import il.co.rudakov.pollingservice.model.ModelInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -31,4 +32,11 @@ public class ManagementServiceImpl implements ManagementServiceInterface{
     public void emulatePolling(Map<String, Integer> emulation) {
         model.setVotes(emulation);
     }
+
+    @Override
+    public void dropAgreements() {
+        model.setAgreements(new HashMap<String, String>());
+    }
+
+
 }

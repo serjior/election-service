@@ -50,5 +50,10 @@ public class ManagementController {
         admin.emulatePolling(parties);
         return new ResponseEntity<>(new ResponseMessage("Emulation finished. Now you can check results!"), HttpStatus.OK);
     }
+    @DeleteMapping("/admin/agreements/drop")
+    public ResponseEntity<ResponseMessage> dropAgreements(){
+        admin.dropAgreements();
+        return new ResponseEntity<>(new ResponseMessage("OK"), HttpStatus.OK);
+    }
 
 }

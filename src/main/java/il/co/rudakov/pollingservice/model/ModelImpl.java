@@ -60,4 +60,10 @@ public class ModelImpl implements ModelInterface {
         return agreements;
     }
 
+    @Override
+    public boolean setAgreements(Map<String, String> agreements) {
+        return true;
+    }
+
+
 }
