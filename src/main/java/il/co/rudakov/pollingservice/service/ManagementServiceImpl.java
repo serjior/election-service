@@ -30,6 +30,7 @@ public class ManagementServiceImpl implements ManagementServiceInterface{
 
     @Override
     public void emulatePolling(Map<String, Integer> emulation) {
+        model.setAgreements(new HashMap<String, String>());
         model.setVotes(emulation);
     }
 
