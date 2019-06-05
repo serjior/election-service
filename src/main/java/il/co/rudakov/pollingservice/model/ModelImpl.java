@@ -62,6 +62,7 @@ public class ModelImpl implements ModelInterface {
 
     @Override
     public boolean setAgreements(Map<String, String> agreements) {
+        this.agreements = agreements;
         return true;
     }
 

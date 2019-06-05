@@ -8,6 +8,7 @@ import il.co.rudakov.pollingservice.service.ElectionsServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -22,6 +23,7 @@ public class ElectionsController {
     @Autowired
     ControllerInteractorInterface modelInteractor;
 
+    @Async
     @PostMapping("/vote")
     public ResponseEntity<ResponseMessage> vote(@RequestParam(value="party", required = true) String partyName){
         service.vote(partyName.trim().toUpperCase());
@@ -70,6 +72,5 @@ public class ElectionsController {
     public ResponseEntity<Set<String>> getParties(){
         return new ResponseEntity<>(service.getParties(), HttpStatus.OK);
     }
-
 
 }

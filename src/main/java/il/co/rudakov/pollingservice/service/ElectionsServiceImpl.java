@@ -57,8 +57,7 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
         // Parties seed will return ( Map < Union , Votes > )
         repo.setThresholdSeedResults(getElectionsParticipants(votesSnapshot, agreements, passBarrier));
 
-
-        // II. FIRST ROUND MANDATES DISTRIBUTION =====================================
+            // II. FIRST ROUND MANDATES DISTRIBUTION =====================================
 
         // Counting First round mandate Rate (cost of the mandate on the First round)
         repo.setInitRate(
@@ -84,11 +83,10 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                 .mapToInt(Integer::intValue)
                 .sum();
 
-        if(leftovers == 0 && agreements.isEmpty()) {
-            // current state of the surplus mandates distribution (only 0 values) will be the second round results
-            repo.getSecondRoundResults().putAll(repo.getSurplusMandates());
+        repo.getSecondRoundResults().putAll(repo.getSurplusMandates());
+
+        if(leftovers == 0 && agreements.isEmpty())
             return repo.getFirstRoundResults();
-        }
 
         while(leftovers > 0){
             repo.setCurrentRate(repo.getReminders()
@@ -134,8 +132,8 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                 });
 
         // if there is no any agreement no need to go through the Third round distribution
-        if (agreements.isEmpty()) {
-            repo.getFirstRoundResults().putAll(thirdRoundResults);
+        if (agreements == null || agreements.isEmpty()) {
+            //repo.getFirstRoundResults().putAll(thirdRoundResults);
             return thirdRoundResults;
         }
 
@@ -145,7 +143,8 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                 .forEach(entry -> {
                     if(!entry.getKey().contains(";"))
                         repo.getFinalResults().put(entry.getKey(), entry.getValue());
-                    else if(entry.getValue() != 0){
+
+                    else /*if(this.getSecondRoundResults().get(entry.getKey()) != 0)*/{
                         String[] parties = entry.getKey().split(";");
                         String party1 = parties[0];
                         String party2 = parties[1];
@@ -162,17 +161,21 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                         unionReminders.put(party1, reminder1);
                         unionReminders.put(party2, reminder2);
                         int surplus = repo.getSecondRoundResults().get(entry.getKey());
+                        // 2 lines added:
+                        if(surplus == 0)
+                            surplus = repo.getFirstRoundResults().get(entry.getKey()) - (integerMandades1 + integerMandades2);
+
                         // just in case block didn't get any surplus mandates
                         repo.getSurplusMandates().put(party1, 0);
                         repo.getSurplusMandates().put(party2, 0);
 
                         while(surplus > 0){
                             if(unionReminders.get(party1) <= 0){
-                                repo.getSurplusMandates().put(party2, surplus);
+                                repo.getSurplusMandates().put(party2, repo.getSurplusMandates().get(party2) + surplus);
                                 break;
                             }
                             if(unionReminders.get(party2) <=0 ){
-                                repo.getSurplusMandates().put(party1, surplus);
+                                repo.getSurplusMandates().put(party1, repo.getSurplusMandates().get(party1) + surplus);
                                 break;
                             }
 
@@ -184,6 +187,7 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                             unionReminders.put(result[0], unionReminders.get(result[0]) - repo.getCurrentRate());
                             surplus--;
                         }
+                        // 2 lines modified
                         repo.getFinalResults().put(party1, repo.getSurplusMandates().get(party1) + integerMandades1);
                         repo.getFinalResults().put(party2, repo.getSurplusMandates().get(party2) + integerMandades2);
                     }
@@ -213,6 +217,7 @@ public class ElectionsServiceImpl implements ElectionsServiceInterface {
                     .forEach(entry -> result.put(entry.getKey(), entry.getValue()));
             return result;
         }
+
 
         snapshot
                 .entrySet()
